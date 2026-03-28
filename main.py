@@ -1,10 +1,4 @@
 import os, sys
-
-this_dir = os.path.dirname(os.path.abspath(__file__))      # .../SimCode
-lm_root  = os.path.join(this_dir, "light_mappo")           # .../SimCode/light_mappo
-sys.path.insert(0, lm_root)
-sys.path.insert(0, this_dir)
-
 # Spyder sometimes keeps a broken 'algorithms' cached:
 if "algorithms" in sys.modules:
     del sys.modules["algorithms"]
@@ -91,30 +85,12 @@ ENV_PARAMS = {
     }
 }
  
-def merge_missing_light_mappo_args(args):
-    # Pull default MAPPO args from light_mappo, then fill any missing fields in your args
-    from light_mappo.config import get_config
-
-    lm_parser = get_config()
-    lm_args = lm_parser.parse_args([])  # defaults only (no CLI)
-
-    for k, v in vars(lm_args).items():
-        if not hasattr(args, k):
-            setattr(args, k, v)
-
-    return args
-
 
 def main():
     args = args_parser()
-    args = merge_missing_light_mappo_args(args)
-    # MAPPO in light_mappo is feed-forward by default (non-recurrent)
+    # args = merge_missing_light_mappo_args(args)
     args.use_recurrent_policy = False
     args.use_naive_recurrent_policy = False
-
-    # Keep inference action scaling consistent with EnvCore (dh_max=20)
-    # args.delta_h_max = 20.0
-    
     np.random.seed(args.seed)
     random.seed(args.seed)
     torch.manual_seed(args.seed)
@@ -197,7 +173,6 @@ def main():
         'h_uav': []
     }
 # ---- Initialize scenario ----
-   # ---- Initialize scenario (outside the FL loop) ----
     x_bs, y_bs, h_bs = 0.0, 0.0, 25.0
     h_min, h_max = args.h_min, args.h_max
     
@@ -226,8 +201,8 @@ def main():
     fc = 3.5e9                  # 3.5 GHz
     # alpha = 2.0               # pathloss exponentcu
     # Transmit power and noise (dBm)
-    P_tx_dbm = 23.0      # 100 mW UAV uplink
-    noise_dbm = -105  # thermal noise + NF
+    P_tx_dbm = 23.0      
+    noise_dbm = -105  
     
     
     # ---------------- Selector ----------------
@@ -254,14 +229,14 @@ def main():
             obs_dim=obs_dim,
             act_dim=act_dim,
             device=args.device,
-            ckpt_path=args.marl_policy_path  # should point to actor.pt
+            ckpt_path=args.marl_policy_path  
         )
     
         # MARL: stateful altitude (start from same initial heights)
         h = h_init.copy()
         last_selected = np.zeros(args.total_UE, dtype=np.float32)
     
-        # RNN hidden state (keep across rounds if recurrent policy was used)
+        
         rnn_states = torch.zeros(
             (args.total_UE, args.recurrent_N, args.hidden_size),
             device=args.device
@@ -441,7 +416,7 @@ def main():
 
     method_tag = args.method
     if args.method == "greedy_channel":
-        method_tag = "bc"   # rename for plots/paper
+        method_tag = "bc"  
     elif args.method == "random":
         method_tag = "rs"
     elif args.method == "round_robin":

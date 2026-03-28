@@ -43,8 +43,6 @@ def args_parser():
         choices=['k_compare', 'env_sweep','ablation_k10'],
         help='experiment group for saving results'
     )
-        
-    #don't change
     parser.add_argument('--env', type=str, default='highrise',choices=['suburban', 'urban','denseurban', 'highrise'],help='Propagation environment type')   
     parser.add_argument('--wireless_on', action='store_true', default=True,help='Enable wireless success/failure model')
     parser.add_argument('--snr_th', type=float, default=3, help='SNR threshold for successful upload')
