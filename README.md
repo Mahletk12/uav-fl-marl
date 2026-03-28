@@ -8,5 +8,8 @@ In cellular-connected UAV federated learning, unreliable air-to-ground wireless 
 
 This repository also provides the modified environment components used in our UAV-FL project. The implementation is designed to work with the [light_mappo](https://github.com/tinyzqh/light_mappo) framework and adapts the environment logic for the UAV federated learning setting.
 
+## How to Run
+Run with the following command:
+
 ```bash
 python main.py --env highrise --total_UE 20 --active_UE 10 --method marl --marl_mode full --round 100 --dataset mnist --model cnn60k
