@@ -1,0 +1,26 @@
+# Data
+data/
+datasets/
+
+# Model checkpoints / ML artifacts
+*.pt
+*.pth
+*.ckpt
+*.h5
+
+# Large archives
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Results
+results/
+
+# OS files
+.DS_Store
+Thumbs.db

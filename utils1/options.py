@@ -1,0 +1,91 @@
+import argparse
+
+def args_parser():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('--round', type=int, default=100)
+    parser.add_argument('--total_UE', type=int, default=20)
+    parser.add_argument('--active_UE', type=int, default=10)
+    parser.add_argument('--local_ep', type=int, default=2)
+    parser.add_argument('--local_bs', type=int, default=32)
+    parser.add_argument('--bs', type=int, default=64)
+    parser.add_argument('--lr', type=float, default=0.01)
+    parser.add_argument('--momentum', type=float, default=0.0)
+
+    # parser.add_argument('--dataset', type=str, default='mnist')
+    parser.add_argument('--iid', type=str, default='dirichlet') #dirichlet,iid
+    parser.add_argument('--alpha', type=float, default=0.1)
+    parser.add_argument('--num_classes', type=int, default=10)
+    parser.add_argument('--num_channels', type=int, default=1)  
+    parser.add_argument('--gpu', type=int, default=0)
+    parser.add_argument('--optimizer', type=str, default='fedavg')
+    
+    parser.add_argument('--mode', type=str, default='random_selection', choices=['ideal', 'random_selection'])
+
+
+    # Experiment switches
+    
+    #change this for method
+    parser.add_argument('--seed', type=int, default=0) #1
+    parser.add_argument(
+        '--method',
+        type=str,
+        default='marl',
+        choices=['random', 'greedy_channel', 'round_robin', 'pf', 'marl'],
+        help='Client selection method'
+    )
+    parser.add_argument('--marl_mode', type=str, default='full',choices=['full', 'selection_only', 'altitude_only'])
+    parser.add_argument('--alt_only_selector', type=str, default='random', choices=['greedy_channel', 'random'])
+    parser.add_argument(
+        '--exp_tag',
+        type=str,
+        default='k_compare',
+        choices=['k_compare', 'env_sweep','ablation_k10'],
+        help='experiment group for saving results'
+    )
+        
+    #don't change
+    parser.add_argument('--env', type=str, default='highrise',choices=['suburban', 'urban','denseurban', 'highrise'],help='Propagation environment type')   
+    parser.add_argument('--wireless_on', action='store_true', default=True,help='Enable wireless success/failure model')
+    parser.add_argument('--snr_th', type=float, default=3, help='SNR threshold for successful upload')
+    
+    #Ablation
+
+ 
+    # Dataset and models
+    parser.add_argument('--dataset', type=str, default='mnist',choices=['mnist', 'cifar10', 'fashion_mnist'], help='Dataset to use')
+    parser.add_argument('--model', type=str, default='NewCNN60K', choices=['cnn', 'resnet', 'cnn60k','Newcnn60k'], help='Model architecture')
+ # Different Environments 
+ 
+   
+
+ # --- Altitude bounds (for MARL / scenario) ---
+    parser.add_argument('--h_min', type=float, default=50.0)
+    parser.add_argument('--h_max', type=float, default=300.0)
+    parser.add_argument('--delta_h_max', type=float, default=10.0)
+
+    # --- MARL training switches ---
+    parser.add_argument('--train_marl', action='store_true', default=False)
+    parser.add_argument('--marl_episodes', type=int, default=10000)
+    parser.add_argument('--episode_len', type=int, default=100)  # wireless-only episode length
+
+
+    # --- PPO / MAPPO hyperparams ---
+    parser.add_argument('--gamma', type=float, default=0.99)
+    parser.add_argument('--gae_lambda', type=float, default=0.95)
+    parser.add_argument('--ppo_clip', type=float, default=0.2)
+    parser.add_argument('--entropy_coef', type=float, default=0.01)
+    parser.add_argument('--vf_coef', type=float, default=0.5)
+    parser.add_argument('--max_grad_norm', type=float, default=0.5)
+    parser.add_argument('--lr_actor', type=float, default=1e-4)
+    parser.add_argument('--lr_critic', type=float, default=3e-4)
+    parser.add_argument('--ppo_epochs', type=int, default=5)
+    parser.add_argument('--minibatch_size', type=int, default=256)
+
+    # --- Reward smoothing (helps PPO) ---
+    parser.add_argument('--snr_kappa', type=float, default=2)  # smooth success prob
+
+    parser.add_argument('--marl_policy_path', type=str, default='actor.pt')
+    args = parser.parse_args()
+    return args
+
